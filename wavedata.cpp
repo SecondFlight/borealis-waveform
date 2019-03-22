@@ -10,7 +10,7 @@ WaveData::WaveData(std::string filepath) {
     // to give the lowest possible memory footprint while avoiding any
     // noticible inaccuracies or artifacts.
 
-    AudioFile<double> audioFile = AudioFile<double>();
+    AudioFile<float> audioFile = AudioFile<float>();
 
     audioFile.load(filepath);
 
@@ -34,20 +34,20 @@ WaveData::WaveData(std::string filepath) {
 
 
 
-WaveSummary::WaveSummary(AudioFile<double>* audioFile, unsigned int samplesPerPacket) {
+WaveSummary::WaveSummary(AudioFile<float>* audioFile, unsigned int samplesPerPacket) {
     m_packets = QList<QList<Packet>>();
 
     auto channelCount = audioFile->getNumChannels();
 
     for (int channel = 0; channel < channelCount; channel++) {
         QList<Packet> channelPackets = QList<Packet>();
-        double min = std::numeric_limits<double>::max();
-        double max = -min;
+        float min = std::numeric_limits<float>::max();
+        float max = -min;
 
         auto samplesPerChannel = audioFile->getNumSamplesPerChannel();
 
         for (unsigned int sampleNum = 0; sampleNum < samplesPerChannel; sampleNum++) {
-            double sample = audioFile->samples[static_cast<unsigned long long>(channel)][sampleNum];
+            float sample = audioFile->samples[static_cast<unsigned long long>(channel)][sampleNum];
             if (sample > max) {
                 max = sample;
             }
@@ -62,12 +62,12 @@ WaveSummary::WaveSummary(AudioFile<double>* audioFile, unsigned int samplesPerPa
                 packet.min = min;
                 channelPackets.push_back(packet);
 
-                min = std::numeric_limits<double>::max();
+                min = std::numeric_limits<float>::max();
                 max = -min;
             }
         }
 
-        if (max != std::numeric_limits<double>::max()) {
+        if (max != std::numeric_limits<float>::max()) {
             Packet packet;
             packet.max = max;
             packet.min = min;
@@ -83,12 +83,12 @@ WaveSummary::WaveSummary(WaveSummary* summary, int packetsPerPacket) {
 
     for (int channel = 0; channel < summary->m_packets.size(); channel++) {
         QList<Packet> channelPackets = QList<Packet>();
-        double min = std::numeric_limits<double>::max();
-        double max = -min;
+        float min = std::numeric_limits<float>::max();
+        float max = -min;
 
         for (int packetNum = 0; packetNum < summary->m_packets[0].size(); packetNum++) {
-            double packetMin = summary->m_packets[channel][packetNum].min;
-            double packetMax = summary->m_packets[channel][packetNum].max;
+            float packetMin = summary->m_packets[channel][packetNum].min;
+            float packetMax = summary->m_packets[channel][packetNum].max;
             if (packetMax > max) {
                 max = packetMax;
             }
@@ -103,13 +103,13 @@ WaveSummary::WaveSummary(WaveSummary* summary, int packetsPerPacket) {
                 packet.min = min;
                 channelPackets.push_back(packet);
 
-                min = std::numeric_limits<double>::max();
+                min = std::numeric_limits<float>::max();
                 max = -min;
             }
         }
 
         // Insert remaining incomplete packet if it exists
-        if (max != std::numeric_limits<double>::max()) {
+        if (max != std::numeric_limits<float>::max()) {
             Packet packet;
             packet.max = max;
             packet.min = min;

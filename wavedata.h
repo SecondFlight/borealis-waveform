@@ -7,8 +7,8 @@
 #include <QList>
 
 struct Packet {
-    double max;
-    double min;
+    float max;
+    float min;
 };
 
 class WaveSummary {
@@ -16,7 +16,7 @@ public:
     // Each QList<Packet> is one channel.
     QList<QList<Packet>> m_packets;
     WaveSummary(WaveSummary* summary, int packetsPerPacket);
-    WaveSummary(AudioFile<double>* audioFile, unsigned int samplesPerPacket);
+    WaveSummary(AudioFile<float>* audioFile, unsigned int samplesPerPacket);
 private:
 };
 
