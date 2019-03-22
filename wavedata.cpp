@@ -30,6 +30,13 @@ WaveData::WaveData(std::string filepath) {
     }
 }
 
+Packet WaveData::getValue(float pos, float zoom) {
+    Packet packet;
+    packet.min = -1;
+    packet.max = 1;
+    return packet;
+}
+
 
 
 

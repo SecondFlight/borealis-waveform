@@ -26,6 +26,7 @@ public:
     // List of summaries, ordered from most to least specific.
     QList<WaveSummary> summaries;
     WaveData(std::string filepath);
+    Packet getValue(float pos, float zoom);
 private:
 };
 
