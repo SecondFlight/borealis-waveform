@@ -3,6 +3,9 @@
 
 #include <QtQuick/QQuickItem>
 
+#include "wavedata.h"
+#include <memory>
+
 class Waveform : public QQuickItem {
     Q_OBJECT
 
@@ -12,6 +15,8 @@ public:
     ~Waveform();
 
     QSGNode* updatePaintNode(QSGNode*, UpdatePaintNodeData*);
+
+    std::shared_ptr<WaveData> m_data;
 };
 
 #endif // WAVEFORM_H

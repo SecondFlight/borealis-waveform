@@ -1,5 +1,6 @@
 #include "wavedata.h"
 #include <limits>
+#include <QDebug>
 
 WaveData::WaveData(std::string filepath) {
     // For now, this code generates summaries of size sampleCount/(2^n)
@@ -31,10 +32,9 @@ WaveData::WaveData(std::string filepath) {
 }
 
 Packet WaveData::getValue(float pos, float zoom) {
-    Packet packet;
-    packet.min = -1;
-    packet.max = 1;
-    return packet;
+    int ind = static_cast<int>(summaries[4].m_packets[0].length() * pos - 0.5);
+    auto val = summaries[4].m_packets[0][ind];
+    return val;
 }
 
 

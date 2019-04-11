@@ -18,13 +18,13 @@ int main(int argc, char *argv[])
         return -1;
 
 //    WaveData data = WaveData("C:\\Program Files (x86)\\Image-Line\\FL Studio 20\\Data\\Patches\\Packs\\Drums\Toms\\Linn Tom.wav");
-    WaveData data = WaveData("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
+//    WaveData data = WaveData("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
 
-    qDebug() << data.summaries.length();
+//    qDebug() << data.summaries.length();
 
-    for (auto item : data.summaries) {
-        qDebug() << item.m_packets[0].length();
-    }
+//    for (auto item : data.summaries) {
+//        qDebug() << item.m_packets[0].length();
+//    }
 
     return app.exec();
 }

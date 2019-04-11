@@ -7,52 +7,53 @@ Waveform::Waveform(QQuickItem* parent)
     : QQuickItem(parent)
 {
     setFlag(ItemHasContents, true);
+    m_data = std::make_shared<WaveData>("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
 }
 
 Waveform::~Waveform() {
 }
 
 QSGNode *Waveform::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData *) {
-    QSGGeometryNode *node = nullptr;
-    QSGGeometry *geometry = nullptr;
+    QSGGeometryNode *waveNode = nullptr;
+    QSGGeometry *wave = nullptr;
 
     if (!oldNode) {
-        node = new QSGGeometryNode;
+        waveNode = new QSGGeometryNode;
 
-        geometry = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 32);
-        geometry->setLineWidth(5);
-        geometry->setDrawingMode(QSGGeometry::DrawLineStrip);
+        wave = new QSGGeometry(QSGGeometry::defaultAttributes_Point2D(), 512 * 2);
+//        wave->setLineWidth(2);
+
+//        wave->setDrawingMode(QSGGeometry::DrawLineStrip);
 //        geometry->setDrawingMode(QSGGeometry::DrawingMode::DrawTriangleStrip);
-        node->setGeometry(geometry);
-        node->setFlag(QSGNode::OwnsGeometry);
+        waveNode->setGeometry(wave);
+        waveNode->setFlag(QSGNode::OwnsGeometry);
 
-        QSGFlatColorMaterial *material = new QSGFlatColorMaterial;
-        material->setColor(QColor(255, 0, 0));
-        node->setMaterial(material);
-        node->setFlag(QSGNode::OwnsMaterial);
-
+        QSGFlatColorMaterial *topMaterial = new QSGFlatColorMaterial;
+        topMaterial->setColor(QColor(55, 164, 131));
+        waveNode->setMaterial(topMaterial);
+        waveNode->setFlag(QSGNode::OwnsMaterial);
     } else {
-        node = static_cast<QSGGeometryNode *>(oldNode);
-        geometry = node->geometry();
-        geometry->allocate(32);
+        waveNode = static_cast<QSGGeometryNode *>(oldNode);
+        wave = waveNode->geometry();
+        wave->allocate(512 * 2);
     }
 
     QSizeF itemSize = size();
-    QSGGeometry::Point2D *vertices = geometry->vertexDataAsPoint2D();
-    for (int i = 0; i < 32; ++i) {
-        qreal t = i / qreal(32 - 1);
-        qreal invt = 1 - t;
+    QSGGeometry::Point2D *topCurvePoints = wave->vertexDataAsPoint2D();
+    for (int i = 0; i < 512; i++) {
+        qreal t = i / qreal(512 - 1);
 
-        QPointF pos = invt * invt * invt * QPointF(0, 0)
-                    + 3 * invt * invt * t * QPointF(1, 0)
-                    + 3 * invt * t * t * QPointF(0, 1)
-                    + t * t * t * QPointF(1, 1);
+        Packet packet = m_data->getValue(t, 1);
 
-        float x = pos.x() * itemSize.width();
-        float y = pos.y() * itemSize.height();
+        double yTop = packet.max * -itemSize.height() + 0.5 * itemSize.height();
+        double yBottom = packet.min * -itemSize.height() + 0.5 * itemSize.height();
+        double x = t * itemSize.width();
 
-        vertices[i].set(x, y);
+        auto pointInd = i * 2;
+        topCurvePoints[pointInd].set(x, yTop);
+        topCurvePoints[pointInd + 1].set(x, yBottom);
     }
-    node->markDirty(QSGNode::DirtyGeometry);
-    return node;
+    waveNode->markDirty(QSGNode::DirtyGeometry);
+//    parentNode->markDirty();
+    return waveNode;
 }
