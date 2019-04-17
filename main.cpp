@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QSurfaceFormat>
 #include "wavedata.h"
 #include "waveform.h"
 
@@ -11,6 +12,10 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     qmlRegisterType<Waveform>("Borealis.Modules.Audio.Static", 1, 0, "Waveform");
+
+    QSurfaceFormat format;
+    format.setSamples(8);
+    QSurfaceFormat::setDefaultFormat(format);
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

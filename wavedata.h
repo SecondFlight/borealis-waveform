@@ -7,8 +7,8 @@
 #include <QList>
 
 struct Packet {
-    float max;
-    float min;
+    double max;
+    double min;
 };
 
 class WaveSummary {
@@ -16,7 +16,7 @@ public:
     // Each QList<Packet> is one channel.
     QList<QList<Packet>> m_packets;
     WaveSummary(WaveSummary* summary, int packetsPerPacket);
-    WaveSummary(AudioFile<float>* audioFile, unsigned int samplesPerPacket);
+    WaveSummary(AudioFile<double>* audioFile, unsigned int samplesPerPacket);
 private:
 };
 
@@ -26,7 +26,7 @@ public:
     // List of summaries, ordered from most to least specific.
     QList<WaveSummary> summaries;
     WaveData(std::string filepath);
-    Packet getValue(float pos, float zoom);
+    Packet getValue(double pos, double left, double right, int pixelWidth);
 private:
 };
 

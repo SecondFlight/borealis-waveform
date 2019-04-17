@@ -22,6 +22,8 @@ Window {
         color: "#53575A"
         Waveform {
             anchors.fill: parent
+            left: leftVal
+            right: rightVal
         }
 
         /*Canvas {
@@ -69,10 +71,35 @@ Window {
                 }
             }
         }
+
+        Slider {
+            id: leftSlider
+            anchors.left: btnLoadFile.right
+            from: 0
+            value: 0
+            to: 1
+            onValueChanged: {
+                mainWindow.leftVal = value
+            }
+        }
+
+        Slider {
+            id: rightSlider
+            anchors.left: leftSlider.right
+            from: 0
+            value: 1
+            to: 1
+            onValueChanged: {
+                mainWindow.rightVal = value
+            }
+        }
     }
     MessageDialog {
         id: messageDialog
         title: "Info"
         text: "Load file clicked."
     }
+
+    property real leftVal
+    property real rightVal
 }
