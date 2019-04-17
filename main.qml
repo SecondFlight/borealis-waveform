@@ -5,6 +5,9 @@ import QtQuick.Dialogs 1.2
 import Borealis.Modules.Audio.Static 1.0
 
 Window {
+    property real leftVal: 0
+    property real rightVal: 1
+
     id: mainWindow
     visible: true
     width: 900
@@ -14,32 +17,42 @@ Window {
     title: qsTr("Waveform")
     color: "#53575A"
     Rectangle {
-        id: waveform
+        id: waveformParent
         x: 0
         y: 0
         width: mainWindow.width
         height: mainWindow.height - 60
         color: "#53575A"
         Waveform {
+            id: waveform
             anchors.fill: parent
             left: leftVal
             right: rightVal
-        }
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onWheel: {
+                    var currentWidth = rightVal - leftVal;
 
-        /*Canvas {
-            x: 0
-            y: 0
-            width: parent.width
-            height: parent.height
-            onPaint: {
-                var ctx = getContext('2d');
-                ctx.fillStyle = Qt.rgba(1, 1, 1, 0.1);
-                ctx.fillRect(0, 0, parent.width * 0.5, parent.height * 0.5);
-                ctx.font = '46px Arial';
-                ctx.fillStyle = Qt.rgba(1, 1, 0, 1);
-                ctx.fillText('Yay canvas!', parent.width * 0.5, parent.height * 0.5);
+                    // normalized
+                    var xPos = mouseX / waveform.width;
+                    console.log(mouseX);
+                    console.log(waveform.width);
+
+                    var scrollAmt = wheel.angleDelta.y * 0.0005;
+                    var l = leftVal + currentWidth * xPos * scrollAmt;
+                    var r = rightVal - currentWidth * (1 - xPos) * scrollAmt;
+                    if (l < 0)
+                        leftVal = 0;
+                    else
+                        leftVal = l;
+                    if (r > 1)
+                        rightVal = 1;
+                    else
+                        rightVal = r;
+                }
             }
-        }*/
+        }
     }
     Rectangle {
         id: footer
@@ -71,35 +84,10 @@ Window {
                 }
             }
         }
-
-        Slider {
-            id: leftSlider
-            anchors.left: btnLoadFile.right
-            from: 0
-            value: 0
-            to: 1
-            onValueChanged: {
-                mainWindow.leftVal = value
-            }
-        }
-
-        Slider {
-            id: rightSlider
-            anchors.left: leftSlider.right
-            from: 0
-            value: 1
-            to: 1
-            onValueChanged: {
-                mainWindow.rightVal = value
-            }
-        }
     }
     MessageDialog {
         id: messageDialog
         title: "Info"
         text: "Load file clicked."
     }
-
-    property real leftVal
-    property real rightVal
 }

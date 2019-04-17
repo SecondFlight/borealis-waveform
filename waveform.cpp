@@ -8,7 +8,7 @@ Waveform::Waveform(QQuickItem* parent)
     : QQuickItem(parent)
 {
     setFlag(ItemHasContents, true);
-    m_data = std::make_shared<WaveData>("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
+    m_data = std::make_shared<WaveData>("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\sawsweep.wav");
     m_left = 0;
     m_right = 1;
 }
