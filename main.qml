@@ -36,8 +36,6 @@ Window {
 
                     // normalized
                     var xPos = mouseX / waveform.width;
-                    console.log(mouseX);
-                    console.log(waveform.width);
 
                     var scrollAmt = wheel.angleDelta.y * 0.0005;
                     var l = leftVal + currentWidth * xPos * scrollAmt;

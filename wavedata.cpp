@@ -39,7 +39,7 @@ Packet WaveData::getValue(double pos, double left, double right, int pixelWidth)
 
     for (int i = summaries.length() - 1; i >= 0; i--) {
         if (summaries[i].m_packets[0].length() > pixelWidth * sizeMult) {
-            summary = &summaries[i];
+            summary = &summaries[i - 1 == -1 ? i : i - 1];
             break;
         }
     }
@@ -52,13 +52,23 @@ Packet WaveData::getValue(double pos, double left, double right, int pixelWidth)
 //    if (packetWidth == 0)
         packetWidth++;
 
-    int indLeft = summary->m_packets[0].length() * (pos * width + left);
-    int indRight = summary->m_packets[0].length() * (pos * width + left) + packetWidth;
+    auto lFloat = summary->m_packets[0].length() * (pos * width + left);
+    auto rFloat = summary->m_packets[0].length() * (pos * width + left) + packetWidth;
 
-    if (indLeft >= summary->m_packets[0].length() - 1)
+    int indLeft = lFloat;
+    int indRight = rFloat;
+
+    double remainderLeft = lFloat - indLeft;
+    double remainderRight = rFloat - indRight;
+
+    if (indLeft >= summary->m_packets[0].length() - 1) {
         indLeft = summary->m_packets[0].length() - 2;
-    if (indRight >= summary->m_packets[0].length())
+        remainderLeft = 0;
+    }
+    if (indRight >= summary->m_packets[0].length()) {
         indRight = summary->m_packets[0].length() - 1;
+        remainderRight = 0;
+    }
 
     Packet result;
 
@@ -66,14 +76,26 @@ Packet WaveData::getValue(double pos, double left, double right, int pixelWidth)
     double min = std::numeric_limits<double>::infinity();
 
     for (int i = indLeft; i <= indRight; i++) {
-        if (summary->m_packets[0][i].max > max)
-            max = summary->m_packets[0][i].max;
-        if (summary->m_packets[0][i].min < min)
-            min = summary->m_packets[0][i].min;
+        auto packetMax = summary->m_packets[0][i].max;
+        auto packetMin = summary->m_packets[0][i].min;
+
+        if (packetMax > max)
+            max = packetMax;
+        if (packetMin < min)
+            min = packetMin;
     }
 
     result.max = max;
     result.min = min;
+
+    // prevent line from being too thin
+    auto distance = max - min;
+    if (distance < 0.02) {
+        auto addAmt = ((0.02 - distance) * 0.5);
+        result.max += addAmt;
+        result.min -= addAmt;
+    }
+
     return result;
 }
 
