@@ -8,6 +8,8 @@ Window {
     property real leftVal: 0
     property real rightVal: 1
 
+    property string chosenFile
+
     id: mainWindow
     visible: true
     width: 900
@@ -28,6 +30,7 @@ Window {
             anchors.fill: parent
             left: leftVal
             right: rightVal
+            filename: chosenFile
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
@@ -78,14 +81,17 @@ Window {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    messageDialog.visible = true;
+                    loadFileDialog.visible = true;
                 }
             }
         }
     }
-    MessageDialog {
-        id: messageDialog
-        title: "Info"
-        text: "Load file clicked."
+    FileDialog {
+        id: loadFileDialog
+        title: "Pick an audio file"
+        nameFilters: "WAV files (*.wav)"
+        onAccepted: {
+            mainWindow.chosenFile = fileUrl
+        }
     }
 }

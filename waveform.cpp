@@ -8,7 +8,8 @@ Waveform::Waveform(QQuickItem* parent)
     : QQuickItem(parent)
 {
     setFlag(ItemHasContents, true);
-    m_data = std::make_shared<WaveData>("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
+//    m_data = std::make_shared<WaveData>("C:\\Users\\qbgee\\Documents\\Image-Line\\FL Studio\\Projects\\cello2.wav");
+    m_data = nullptr;
     m_left = 0;
     m_right = 1;
 }
@@ -40,6 +41,9 @@ QSGNode *Waveform::updatePaintNode(QSGNode* oldNode, UpdatePaintNodeData *) {
         wave = waveNode->geometry();
         wave->allocate(this->width() * 2);
     }
+
+    if (m_data == nullptr)
+        return waveNode;
 
     QSizeF itemSize = size();
     QSGGeometry::Point2D *topCurvePoints = wave->vertexDataAsPoint2D();
@@ -95,5 +99,13 @@ void Waveform::setRight(const double &val)
     }
 
     emit rightChanged(val);
+    update();
+}
+
+void Waveform::setFilename(const QString &val) {
+    m_filename = val.right(val.length() - 8); // strip "file:///" from the beginning
+
+    m_data = std::make_shared<WaveData>(m_filename.toUtf8().constData());
+    emit filenameChanged(val);
     update();
 }

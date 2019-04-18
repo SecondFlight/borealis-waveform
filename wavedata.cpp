@@ -32,6 +32,14 @@ WaveData::WaveData(std::string filepath) {
 }
 
 Packet WaveData::getValue(double pos, double left, double right, int pixelWidth) {
+    // temp
+    if (summaries.length() < 5) {
+        Packet result;
+        result.min = 0;
+        result.max = 0;
+        return result;
+    }
+
     double width = right - left;
     double sizeMult = 1/width;
 
